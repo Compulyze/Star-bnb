@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StarBNB Flyer with Shared Orbiting Hexagons</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .flyer {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(180deg, #1a1a3d 0%, #000 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Horizon glow effect */
+        .flyer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 191, 255, 0.3), transparent 70%);
+            z-index: 0;
+        }
+
+        /* Top Section: Logo */
+        .logo-section {
+            z-index: 1;
+            margin-bottom: 25px;
+        }
+
+        .logo-section img {
+            width: 200px;
+        }
+
+        /* Headline Section */
+        .headline-section {
+            text-align: center;
+            z-index: 1;
+            margin-bottom: 30px;
+        }
+
+        .headline-section h1 {
+            font-size: 1.8em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .headline-section p {
+            font-size: 1em;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Middle Section: Icon Boxes */
+        .icon-boxes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+            z-index: 1;
+            position: relative; /* For positioning the shared orbit */
+        }
+
+        .icon-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: background 0.3s ease;
+            position: relative; /* For positioning the orbit */
+        }
+
+        /* Hover effect for icon boxes with dynamic RGB glow */
+        .icon-box:hover {
+            background: rgba(255, 255, 255, 0.2);
+            animation: glow 3.45s infinite;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 0, 0, 0.5),
+                            0 0 30px rgba(255, 0, 0, 0.3);
+            }
+            20% {
+                box-shadow: 0 0 15px rgba(0, 255, 0, 0.6),
+                            0 0 70px rgba(0, 255, 0, 0.4);
+            }
+            40% {
+                box-shadow: 0 0 12px rgba(0, 0, 255, 0.5),
+                            0 0 55px rgba(0, 0, 255, 0.3);
+            }
+            60% {
+                box-shadow: 0 0 20px rgba(255, 0, 255, 0.6),
+                            0 0 40px rgba(255, 0, 255, 0.4);
+            }
+            80% {
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.5),
+                            0 0 60px rgba(0, 255, 255, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(255, 0, 0, 0.5),
+                            0 0 30px rgba(255, 0, 0, 0.3);
+            }
+        }
+
+        /* Icon Wrapper */
+        .icon-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 1.5em;
+            height: 1.5em;
+            padding: 0;
+        }
+
+        .icon-box i {
+            font-size: 1.5em;
+            color: #00bfff;
+            z-index: 1;
+        }
+
+        .icon-box h3 {
+            font-size: 0.9em;
+            margin: 8px 0 5px;
+            text-align: center;
+        }
+
+        .icon-box p {
+            font-size: 0.7em;
+            opacity: 0.8;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        /* Shared Orbiting Hexagons */
+        .orbit {
+            position: absolute;
+            width: 1.5em;
+            height: 1.5em;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Rubberband effect */
+        }
+
+        .orbit::before,
+        .orbit::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ffffff;
+            border: 1px solid #ffffff;
+            clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+            z-index: -1;
+            top: 50%;
+            left: calc(50% - 11px); /* Offset 11px to the left */
+            transform-origin: 15px 0; /* Radius of 15px */
+            animation: orbit 4s linear infinite;
+        }
+
+        .orbit::before {
+            animation-delay: 0s;
+        }
+
+        .orbit::after {
+            animation-delay: 2s; /* Delay to make them chase each other */
+        }
+
+        @keyframes orbit {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(180deg) scale(1.05);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg) scale(1);
+            }
+        }
+
+        /* Bottom Section: CTA and Contact */
+        .bottom-section {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .cta {
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #00bfff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #009acd;
+        }
+
+        .contact-info p {
+            font-size: 0.8em;
+            margin: 5px 0;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .contact-info a {
+            color: #00bfff;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="flyer">
+        <!-- Top Section: Logo -->
+        <div class="logo-section">
+            <img src="starbnb_logo.png" alt="StarBNB Logo">
+        </div>
+
+        <!-- Headline Section -->
+        <div class="headline-section">
+            <h1>Turn Your Vacation Property into a Year-Round Revenue Stream</h1>
+            <p>Partner with STARBNB — Explore What’s Out There, Earn What You Deserve</p>
+        </div>
+
+        <!-- Middle Section: Icon Boxes -->
+        <div class="icon-boxes">
+            <div class="icon-box">
+                <div class="icon-wrapper">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Elite Guest Experience</h3>
+                <p>Your guests are treated like stars with world-class service.</p>
+            </div>
+            <div class="icon-box">
+                <div class="icon-wrapper">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Year-Round Occupancy Focus</h3>
+                <p>Maximize income with bookings even during slow seasons.</p>
+            </div>
+            <div class="icon-box">
+                <div class="icon-wrapper">
+                    <i class="fas fa-hands"></i>
+                </div>
+                <h3>Hands-Free Hosting</h3>
+                <p>We handle everything—guest communication, cleaning, and upkeep.</p>
+            </div>
+            <div class="icon-box">
+                <div class="icon-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Local Experts</h3>
+                <p>We’re based right here in Long Island Village.</p>
+            </div>
+            <!-- Shared Orbit Element -->
+            <div class="orbit"></div>
+        </div>
+
+        <!-- Bottom Section: CTA and Contact -->
+        <div class="bottom-section">
+            <div class="cta">
+                <p>Let Your Property Shine. Join STARBNB Today.</p>
+                <a href="#" class="cta-button">Schedule Your Free Estimate</a>
+            </div>
+            <div class="contact-info">
+                <p>Website: <a href="https://yourwebsite.com">[yourwebsite.com]</a></p>
+                <p>Phone: [your phone number]</p>
+                <p>Email: <a href="mailto:your.email@example.com">[your email address]</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get all icon boxes and the shared orbit element
+        const iconBoxes = document.querySelectorAll('.icon-box');
+        const orbit = document.querySelector('.orbit');
+
+        // Function to position the orbit over a given icon box
+        function positionOrbit(targetBox) {
+            const iconWrapper = targetBox.querySelector('.icon-wrapper');
+            const rect = iconWrapper.getBoundingClientRect();
+            const parentRect = document.querySelector('.icon-boxes').getBoundingClientRect();
+
+            // Calculate the position relative to the .icon-boxes container
+            const top = rect.top - parentRect.top + (rect.height / 2) - (orbit.offsetHeight / 2);
+            const left = rect.left - parentRect.left + (rect.width / 2) - (orbit.offsetWidth / 2);
+
+            orbit.style.top = `${top}px`;
+            orbit.style.left = `${left}px`;
+        }
+
+        // Set initial position to the top-left icon (first icon-box)
+        positionOrbit(iconBoxes[0]);
+
+        // Add hover event listeners to each icon box
+        iconBoxes.forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                positionOrbit(box);
+            });
+        });
+
+        // Optional: Return to the top-left icon when not hovering over any icon
+        document.querySelector('.icon-boxes').addEventListener('mouseleave', () => {
+            positionOrbit(iconBoxes[0]);
+        });
+    </script>
+</body>
+</html>
